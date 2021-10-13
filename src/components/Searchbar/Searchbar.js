@@ -8,17 +8,23 @@ class Searchbar extends Component {
 
   handleChange = (e) => {
     console.log(e.currentTarget.value);
-    // console.log(this.state);
 
     this.setState({
-      search: e.currentTarget.value,
+      search: e.currentTarget.value.toLowerCase(),
     });
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
+
     const { search } = this.state;
     console.log(search);
+
+    if (search.trim() === "") {
+      console.log("Пустая строка");
+      return;
+    }
+
     this.props.onSubmit(search);
   };
 

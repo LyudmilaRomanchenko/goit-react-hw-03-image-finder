@@ -5,13 +5,13 @@
 
 import s from "./Button.module.css";
 
-function Button() {
+function Button({ handleButtonLoadMore }) {
   window.scrollTo({
     top: document.documentElement.scrollHeight,
     behavior: "smooth",
   });
   return (
-    <button type="button" className={s.Button}>
+    <button type="button" className={s.Button} onClick={handleButtonLoadMore}>
       Load more
     </button>
   );
