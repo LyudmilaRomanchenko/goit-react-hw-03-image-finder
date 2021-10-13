@@ -38,7 +38,7 @@ class App extends Component {
           timeout={3000} //3 secs
         />
 
-        <div> Покажи </div>
+        {/* <div> Покажи </div> */}
       </div>
     );
   }
