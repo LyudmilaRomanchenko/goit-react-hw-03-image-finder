@@ -1,11 +1,15 @@
 import s from "./ImageGallery.module.css";
 import ImageGalleryItem from "../ImageGalleryItem";
 
-function ImageGallery({ query }) {
+function ImageGallery({ data, handleClickImg }) {
   return (
     <ul className={s.ImageGallery}>
-      {query.map(({ id, webformatURL }) => (
-        <ImageGalleryItem id={id} webformatURL={webformatURL} />
+      {data.map(({ id, webformatURL }) => (
+        <ImageGalleryItem
+          id={id}
+          webformatURL={webformatURL}
+          handleClickImg={handleClickImg}
+        />
       ))}
     </ul>
   );
