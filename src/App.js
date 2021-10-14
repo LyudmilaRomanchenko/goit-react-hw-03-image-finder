@@ -1,41 +1,48 @@
-// import logo from "./logo.svg";
 import "./App.css";
 import { Component } from "react";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
+import Modal from "./components/Modal";
 // import Button from "./components/Button";
 
 class App extends Component {
   state = {
     query: null,
+    showModal: false,
+    largeImg: "",
   };
-
-  // componentDidMount() {
-  //   const url = `${BASE_URL}/?q=${this.state.query}&page==${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-
-  //   if (this.state.query) {
-  //     fetch(url)
-  //       .then((response) => response.json())
-  //       .then(({ hits }) => {
-  //         console.log(hits);
-  //         this.setState({ data: hits });
-  //       });
-  //   }
-  // }
 
   handleFormSubmit = (query) => {
     console.log(query);
     this.setState({ query });
   };
 
+  handleClickImg = (e) => {
+    // console.log(this.state.largeImg);
+    const imgForModal = e.currentTarget.alt;
+    console.log(imgForModal);
+    this.setState({ showModal: true, largeImg: imgForModal });
+    // console.log(e.currentTarget.alt);
+    console.log(this.state.largeImg);
+    console.log("Modal");
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
   render() {
-    const { query } = this.state;
+    const { query, showModal } = this.state;
 
     return (
-      <div>
+      <div className="App">
         <Searchbar onSubmit={this.handleFormSubmit} />
 
-        <ImageGallery query={query} />
+        <ImageGallery query={query} onClick={this.handleClickImg} />
+
+        {showModal && (
+          <Modal largeImg={this.state.largeImg} onClick={this.toggleModal} />
+        )}
 
         {/* <div> Покажи </div> */}
       </div>

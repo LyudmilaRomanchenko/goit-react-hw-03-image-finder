@@ -16,53 +16,83 @@ const BASE_URL = `https://pixabay.com/api`;
 
 class ImageGallery extends Component {
   state = {
-    data: null,
     page: 1,
+    data: [],
+
     // error: null,
     status: "idle",
   };
+
   componentDidUpdate(prevProps, prevState) {
     const prevQuery = prevProps.query;
     const nextQuery = this.props.query;
-    const page = this.state.page;
 
-    const url = `${BASE_URL}/?q=${nextQuery}&page==${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+    const prevPage = prevState.page;
+    const nextPage = this.state.page;
+    // const page = this.state.page;
+    console.log(this.state.page);
+
+    const url = `${BASE_URL}/?q=${nextQuery}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
     if (prevQuery !== nextQuery) {
-      this.setState({ status: "pending" });
-      // this.cccccc();
+      this.setState({ page: 1, data: [], status: "pending" });
+
       fetch(url)
         .then((response) => response.json())
         .then(({ hits }) => {
           console.log(hits);
           this.setState({ data: hits, status: "resolved" });
         })
-        .catch((error) => this.setState({ error }))
-        .finally(() => this.setState({ loading: false }));
+        .catch((error) => this.setState({ error }));
+      return;
     }
-  }
 
-  // cccccc = () => {
-  //   fetch(url)
-  //     .then((response) => response.json())
-  //     .then(({ hits }) => {
-  //       console.log(hits);
-  //       this.setState({ data: hits, status: "resolved" });
-  //     });
-  // }
+    ///////////////////////
+    if (prevPage !== nextPage) {
+      this.setState({ status: "pending" });
+
+      fetch(url)
+        .then((response) => response.json())
+        .then(({ hits }) => {
+          console.log(hits);
+          this.setState({
+            data: [...prevState.data, ...hits],
+            status: "resolved",
+          });
+        })
+        .catch((error) => this.setState({ error }));
+      return;
+    }
+
+    // //////////////////////
+  }
 
   handleButtonLoadMore = () => {
     console.log("Кнопка показать болше");
-    this.setState((prevState) => ({ page: prevState.page + 1 }));
+
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+      // data: [...prevState.data, ...this.state.data],
+    }));
+    console.log(this.state.data);
     console.log(this.state.page);
   };
 
-  handleClickImg = () => {
-    console.log("Modal");
-  };
+  // handleClickImg = (e) => {
+  //   console.log(e.currentTarget.alt);
+  //   console.log("Modal");
+  // };
 
   render() {
+    /////////////////////
+    // window.scrollTo({
+    //   top: document.documentElement.scrollHeight,
+    //   behavior: "smooth",
+    // });
+    /////////////////
     const { data, status } = this.state;
+
+    console.log(data.length);
 
     if (status === "idle") {
       return <h1>Пусто</h1>;
@@ -84,15 +114,20 @@ class ImageGallery extends Component {
       return (
         <div>
           <ul className={s.ImageGallery}>
-            {data.map(({ id, webformatURL }) => (
-              <ImageGalleryItem
-                id={id}
-                webformatURL={webformatURL}
-                handleClickImg={this.handleClickImg}
-              />
+            {data.map(({ id, webformatURL, largeImageURL }) => (
+              <li key={id} className={s.ImageGalleryItem}>
+                <ImageGalleryItem
+                  webformatURL={webformatURL}
+                  largeImageURL={largeImageURL}
+                  onClick={this.props.onClick}
+                />
+              </li>
             ))}
           </ul>
-          <Button handleButtonLoadMore={this.handleButtonLoadMore} />
+
+          {data.length >= 12 && (
+            <Button handleButtonLoadMore={this.handleButtonLoadMore} />
+          )}
         </div>
       );
     }
