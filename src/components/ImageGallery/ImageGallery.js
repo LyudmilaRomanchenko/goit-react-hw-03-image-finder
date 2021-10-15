@@ -9,15 +9,12 @@ import Loader from "react-loader-spinner";
 //////////////////////
 
 const API_KEY = "23052937-32fb9bd6f4b84b12682be3748";
-// let page = 1;
-// const searchQuery = '';
-// const BASE_URL = `https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 const BASE_URL = `https://pixabay.com/api`;
 
 class ImageGallery extends Component {
   state = {
-    // page: 1,
-    page: this.props.page,
+    page: 1,
+    // page: "",
     data: [],
 
     // error: null,
@@ -33,12 +30,11 @@ class ImageGallery extends Component {
 
     const prevPage = prevState.page;
     const nextPage = this.state.page;
+    console.log(prevPage);
+    console.log(nextPage);
+    console.log(this.props.page);
 
-    // const page = this.state.page;
-    // console.log(this.state.page);
-
-    const url = `${BASE_URL}/?q=${nextQuery}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-    // const url = `${BASE_URL}/?q=${nextQuery}&page=${this.props.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+    const url = `${BASE_URL}/?q=${nextQuery}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
     if (prevQuery !== nextQuery) {
       this.setState({ page: this.props.page, status: "pending" });
@@ -54,43 +50,48 @@ class ImageGallery extends Component {
     }
 
     ///////////////////////
-    if (prevPage !== nextPage && prevQuery === nextQuery) {
-      this.setState({ status: "pending" });
+    if (prevPage !== nextPage) {
+      this.setState({ page: nextPage, status: "pending" });
 
       fetch(url)
         .then((response) => response.json())
         .then(({ hits }) => {
           console.log(hits);
-          this.setState({
+          this.setState((prevState) => ({
             data: [...prevState.data, ...hits],
             status: "resolved",
-          });
+          }));
         })
         .catch((error) => this.setState({ error }));
       return;
     }
+    ////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // if (prevQuery !== nextQuery && prevPage !== nextPage) {
+    //   this.setState({ page: this.props.page, status: "pending" });
+    //   console.log(this.props.page);
+    //   const url1 = `${BASE_URL}/?q=${this.props.page}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
-    // //////////////////////
+    //   fetch(url1)
+    //     .then((response) => response.json())
+    //     .then(({ hits }) => {
+    //       console.log(hits);
+    //       this.setState({ data: hits, status: "resolved" });
+    //     })
+    //     .catch((error) => this.setState({ error }));
+    //   return;
+    // }
   }
 
   //////////////
-  // handleButtonLoadMore = () => {
-  //   console.log("Кнопка показать болше");
-
-  //   this.setState((prevState) => ({
-  //     page: prevState.page + 1,
-  //   }));
-  //   console.log(this.state.data);
-  //   console.log(this.state.page);
-  // };
-
   handleButtonLoadMore = () => {
     console.log("Кнопка показать болше");
+    console.log(this.state.page);
 
-    this.setState((prevState) => ({
-      page: prevState.page + 1,
+    this.setState(({ page }) => ({
+      // page: prevState.page + 1,
+      page: page + 1,
     }));
-    console.log(this.state.data);
+    // console.log(this.state.data);
     console.log(this.state.page);
   };
   //////////////
@@ -112,7 +113,7 @@ class ImageGallery extends Component {
     console.log(data.length);
 
     if (status === "idle") {
-      return <h1>Пусто</h1>;
+      return <h2>Enter your request.</h2>;
     }
 
     if (status === "pending") {

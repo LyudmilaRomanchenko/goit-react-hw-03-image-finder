@@ -7,15 +7,15 @@ import Modal from "./components/Modal";
 
 class App extends Component {
   state = {
-    // page: 1,
+    page: "",
     query: null,
     showModal: false,
     largeImg: "",
   };
 
-  handleFormSubmit = (query) => {
-    console.log(query);
-    this.setState({ query, page: 1 });
+  handleFormSubmit = (query, page) => {
+    console.log(query, page);
+    this.setState({ query, page });
   };
 
   handleClickImg = (e) => {
@@ -44,7 +44,7 @@ class App extends Component {
   ///////////
 
   render() {
-    const { query, showModal, page } = this.state;
+    const { query, page, showModal } = this.state;
 
     return (
       <div className="App">
@@ -60,8 +60,6 @@ class App extends Component {
         {showModal && (
           <Modal largeImg={this.state.largeImg} onClick={this.toggleModal} />
         )}
-
-        {/* <div> Покажи </div> */}
       </div>
     );
   }

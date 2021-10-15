@@ -4,6 +4,7 @@ import { Component } from "react";
 class Searchbar extends Component {
   state = {
     search: "",
+    page: 1,
   };
 
   handleChange = (e) => {
@@ -17,7 +18,7 @@ class Searchbar extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { search } = this.state;
+    const { search, page } = this.state;
     console.log(search);
 
     if (search.trim() === "") {
@@ -25,7 +26,7 @@ class Searchbar extends Component {
       return;
     }
 
-    this.props.onSubmit(search);
+    this.props.onSubmit(search, page);
   };
 
   render() {
