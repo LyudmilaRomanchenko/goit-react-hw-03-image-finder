@@ -1,7 +1,12 @@
-import s from "./Searchbar.module.css";
 import { Component } from "react";
+import PropTypes from "prop-types";
+import s from "./Searchbar.module.css";
 
 class Searchbar extends Component {
+  static defaultProps = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   state = {
     search: "",
     page: 1,

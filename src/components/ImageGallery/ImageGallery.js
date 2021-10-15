@@ -1,20 +1,23 @@
 import { Component } from "react";
+import PropTypes from "prop-types";
 import s from "./ImageGallery.module.css";
 import ImageGalleryItem from "../ImageGalleryItem";
 import Button from "../Button";
-
-/////////////////////
+//Лоадер
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
-//////////////////////
 
 const API_KEY = "23052937-32fb9bd6f4b84b12682be3748";
 const BASE_URL = `https://pixabay.com/api`;
 
 class ImageGallery extends Component {
+  static defaultProps = {
+    query: PropTypes.string.isRequired,
+    page: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired,
+  };
   state = {
     page: 1,
-    // page: "",
     data: [],
 
     // error: null,
@@ -35,6 +38,7 @@ class ImageGallery extends Component {
     console.log(this.props.page);
 
     const url = `${BASE_URL}/?q=${nextQuery}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+    // const url2 = `${BASE_URL}/?q=${nextQuery}&page=${this.props.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
     if (prevQuery !== nextQuery) {
       this.setState({ page: this.props.page, status: "pending" });
@@ -49,8 +53,7 @@ class ImageGallery extends Component {
       return;
     }
 
-    ///////////////////////
-    if (prevPage !== nextPage) {
+    if (prevPage !== nextPage && prevQuery === nextQuery) {
       this.setState({ page: nextPage, status: "pending" });
 
       fetch(url)
@@ -65,33 +68,15 @@ class ImageGallery extends Component {
         .catch((error) => this.setState({ error }));
       return;
     }
-    ////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // if (prevQuery !== nextQuery && prevPage !== nextPage) {
-    //   this.setState({ page: this.props.page, status: "pending" });
-    //   console.log(this.props.page);
-    //   const url1 = `${BASE_URL}/?q=${this.props.page}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-
-    //   fetch(url1)
-    //     .then((response) => response.json())
-    //     .then(({ hits }) => {
-    //       console.log(hits);
-    //       this.setState({ data: hits, status: "resolved" });
-    //     })
-    //     .catch((error) => this.setState({ error }));
-    //   return;
-    // }
   }
 
-  //////////////
   handleButtonLoadMore = () => {
     console.log("Кнопка показать болше");
     console.log(this.state.page);
 
     this.setState(({ page }) => ({
-      // page: prevState.page + 1,
       page: page + 1,
     }));
-    // console.log(this.state.data);
     console.log(this.state.page);
   };
   //////////////
@@ -144,52 +129,12 @@ class ImageGallery extends Component {
           </ul>
 
           {data.length >= 12 && (
-            // <Button handleButtonLoadMore={this.props.handleButtonLoadMore} />
             <Button handleButtonLoadMore={this.handleButtonLoadMore} />
           )}
         </div>
       );
     }
-
-    // return (
-    //   <div>
-    //     {/* {this.state.error && <h1>Ошибка</h1>} */}
-    //     <ul className={s.ImageGallery}>
-    //       {data &&
-    //         data.map(({ id, webformatURL }) => (
-    //           <ImageGalleryItem
-    //             id={id}
-    //             webformatURL={webformatURL}
-    //             handleClickImg={this.handleClickImg}
-    //           />
-    //         ))}
-    //     </ul>
-    //     {this.state.loading && (
-    //       <Loader
-    //         type="Puff"
-    //         color="#00BFFF"
-    //         height={100}
-    //         width={100}
-    //         timeout={3000} //3 secs
-    //       />
-    //     )}
-    //   </div>
-    // );
   }
 }
-
-// function ImageGallery({ query, handleClickImg }) {
-//   return (
-//     <ul className={s.ImageGallery}>
-//       {data.map(({ id, webformatURL }) => (
-//         <ImageGalleryItem
-//           id={id}
-//           webformatURL={webformatURL}
-//           handleClickImg={handleClickImg}
-//         />
-//       ))}
-//     </ul>
-//   );
-// }
 
 export default ImageGallery;

@@ -1,7 +1,7 @@
+import PropTypes from "prop-types";
 import s from "./ImageGalleryItem.module.css";
 
 function ImageGalleryItem({ webformatURL, largeImageURL, onClick }) {
-  // console.log(id, webformatURL);
   return (
     <img
       src={webformatURL}
@@ -12,13 +12,12 @@ function ImageGalleryItem({ webformatURL, largeImageURL, onClick }) {
   );
 }
 
+ImageGalleryItem.prototype = {
+  webformatURL: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
 export default ImageGalleryItem;
 
-//  <li key={id} className={s.ImageGalleryItem}>
-//    <img
-//      src={webformatURL}
-//      alt=""
-//      className={s.ImageGalleryItemImage}
-//      onClick={handleClickImg}
-//    />
-//  </li>;
+//

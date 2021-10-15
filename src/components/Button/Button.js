@@ -3,6 +3,7 @@
 //   behavior: "smooth",
 // });
 
+import PropTypes from "prop-types";
 import s from "./Button.module.css";
 
 function Button({ handleButtonLoadMore }) {
@@ -16,5 +17,9 @@ function Button({ handleButtonLoadMore }) {
     </button>
   );
 }
+
+Button.prototype = {
+  handleButtonLoadMore: PropTypes.func.isRequired,
+};
 
 export default Button;
