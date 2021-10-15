@@ -16,7 +16,8 @@ const BASE_URL = `https://pixabay.com/api`;
 
 class ImageGallery extends Component {
   state = {
-    page: 1,
+    // page: 1,
+    page: this.props.page,
     data: [],
 
     // error: null,
@@ -27,15 +28,20 @@ class ImageGallery extends Component {
     const prevQuery = prevProps.query;
     const nextQuery = this.props.query;
 
+    // const prevPage = prevProps.page;
+    // const nextPage = this.props.page;
+
     const prevPage = prevState.page;
     const nextPage = this.state.page;
+
     // const page = this.state.page;
-    console.log(this.state.page);
+    // console.log(this.state.page);
 
     const url = `${BASE_URL}/?q=${nextQuery}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+    // const url = `${BASE_URL}/?q=${nextQuery}&page=${this.props.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
     if (prevQuery !== nextQuery) {
-      this.setState({ page: 1, data: [], status: "pending" });
+      this.setState({ page: this.props.page, status: "pending" });
 
       fetch(url)
         .then((response) => response.json())
@@ -48,7 +54,7 @@ class ImageGallery extends Component {
     }
 
     ///////////////////////
-    if (prevPage !== nextPage) {
+    if (prevPage !== nextPage && prevQuery === nextQuery) {
       this.setState({ status: "pending" });
 
       fetch(url)
@@ -67,16 +73,27 @@ class ImageGallery extends Component {
     // //////////////////////
   }
 
+  //////////////
+  // handleButtonLoadMore = () => {
+  //   console.log("Кнопка показать болше");
+
+  //   this.setState((prevState) => ({
+  //     page: prevState.page + 1,
+  //   }));
+  //   console.log(this.state.data);
+  //   console.log(this.state.page);
+  // };
+
   handleButtonLoadMore = () => {
     console.log("Кнопка показать болше");
 
     this.setState((prevState) => ({
       page: prevState.page + 1,
-      // data: [...prevState.data, ...this.state.data],
     }));
     console.log(this.state.data);
     console.log(this.state.page);
   };
+  //////////////
 
   // handleClickImg = (e) => {
   //   console.log(e.currentTarget.alt);
@@ -126,6 +143,7 @@ class ImageGallery extends Component {
           </ul>
 
           {data.length >= 12 && (
+            // <Button handleButtonLoadMore={this.props.handleButtonLoadMore} />
             <Button handleButtonLoadMore={this.handleButtonLoadMore} />
           )}
         </div>

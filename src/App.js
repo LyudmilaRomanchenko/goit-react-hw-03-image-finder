@@ -7,6 +7,7 @@ import Modal from "./components/Modal";
 
 class App extends Component {
   state = {
+    // page: 1,
     query: null,
     showModal: false,
     largeImg: "",
@@ -14,7 +15,7 @@ class App extends Component {
 
   handleFormSubmit = (query) => {
     console.log(query);
-    this.setState({ query });
+    this.setState({ query, page: 1 });
   };
 
   handleClickImg = (e) => {
@@ -31,14 +32,30 @@ class App extends Component {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
+  ////////////////
+  // handleButtonLoadMore = () => {
+  //   console.log("Кнопка показать болше");
+
+  //   this.setState((prevState) => ({
+  //     page: prevState.page + 1,
+  //   }));
+  //   console.log(this.state.page);
+  // };
+  ///////////
+
   render() {
-    const { query, showModal } = this.state;
+    const { query, showModal, page } = this.state;
 
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleFormSubmit} />
 
-        <ImageGallery query={query} onClick={this.handleClickImg} />
+        <ImageGallery
+          query={query}
+          page={page}
+          onClick={this.handleClickImg}
+          // handleButtonLoadMore={this.handleButtonLoadMore}
+        />
 
         {showModal && (
           <Modal largeImg={this.state.largeImg} onClick={this.toggleModal} />
