@@ -9,29 +9,30 @@ class Searchbar extends Component {
 
   state = {
     search: "",
-    page: 1,
   };
 
+  // Контролируем изминения запроса в инпуте и делаем нечуствительным к регистру (приводим к нижнему регистру)
   handleChange = (e) => {
-    console.log(e.currentTarget.value);
-
     this.setState({
       search: e.currentTarget.value.toLowerCase(),
     });
   };
 
+  // Сабмит формы
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { search, page } = this.state;
+    const { search } = this.state;
     console.log(search);
 
+    // Если пустая строка запрос не передаем
     if (search.trim() === "") {
       console.log("Пустая строка");
       return;
     }
 
-    this.props.onSubmit(search, page);
+    // Передаем результат запроса в App.js
+    this.props.onSubmit(search);
   };
 
   render() {
@@ -59,5 +60,3 @@ class Searchbar extends Component {
 }
 
 export default Searchbar;
-
-// Props

@@ -7,10 +7,10 @@ import PropTypes from "prop-types";
 import s from "./Button.module.css";
 
 function Button({ handleButtonLoadMore }) {
-  window.scrollTo({
-    top: document.documentElement.scrollHeight,
-    behavior: "smooth",
-  });
+  // window.scrollTo({
+  //   top: document.documentElement.scrollHeight,
+  //   behavior: "smooth",
+  // });
   return (
     <button type="button" className={s.Button} onClick={handleButtonLoadMore}>
       Load more
