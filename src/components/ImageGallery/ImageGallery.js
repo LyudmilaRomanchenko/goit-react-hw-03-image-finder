@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
 import s from "./ImageGallery.module.css";
 import ImageGalleryItem from "../ImageGalleryItem";
-import Button from "../Button";
+// import Button from "../Button";
 //Лоадер
 // import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 // import Loader from "react-loader-spinner";
 
 function ImageGallery({ data, handleClickImg, handleButtonLoadMore }) {
+  console.log(data);
   return (
     <div>
       <ul className={s.ImageGallery}>
@@ -21,9 +22,9 @@ function ImageGallery({ data, handleClickImg, handleButtonLoadMore }) {
         ))}
       </ul>
 
-      {data.length >= 12 && (
+      {/* {data.length >= 12 && (
         <Button handleButtonLoadMore={handleButtonLoadMore} />
-      )}
+      )} */}
     </div>
   );
 }

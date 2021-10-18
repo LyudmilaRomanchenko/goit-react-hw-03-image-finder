@@ -3,13 +3,13 @@ import { Component } from "react";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
 import Modal from "./components/Modal";
-import APIfirst from "./components/Fetch/FetchFirstLoader";
-// import Button from "./components/Button";
+import APIfirst from "./components/services/img-api";
+import Button from "./components/Button";
 //Лоадер
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
-const API_KEY = "23052937-32fb9bd6f4b84b12682be3748";
-const BASE_URL = `https://pixabay.com/api`;
+// const API_KEY = "23052937-32fb9bd6f4b84b12682be3748";
+// const BASE_URL = `https://pixabay.com/api`;
 
 class App extends Component {
   state = {
@@ -34,46 +34,48 @@ class App extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
-    const url = `${BASE_URL}/?q=${nextQuery}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+    // const url = `${BASE_URL}/?q=${nextQuery}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
     if (prevQuery !== nextQuery) {
       this.resetPage();
-      // this.setState({ status: "pending" });
       console.log(this.state.page);
+      // console.log(this.state.data);
 
       if (nextPage === 1) {
         this.setState({ status: "pending" });
         APIfirst.fetchFirstLoader(nextQuery, nextPage).then(({ hits }) => {
-          this.setState({ data: hits, status: "resolved" });
+          this.setState({
+            data: hits.map(({ id, webformatURL, largeImageURL }) => ({
+              id,
+              webformatURL,
+              largeImageURL,
+            })),
+            status: "resolved",
+          });
         });
-        // .catch((error) =>  this.setState({ error }));
-
-        // fetch(url)
-        //   .then((response) => response.json())
-        //   .then(({ hits }) => {
-        //     this.setState({ data: hits, status: "resolved" });
-        //   });
-        // // .catch((error) =>  this.setState({ error }));
       }
-
-      return;
     }
 
     if (prevPage !== nextPage) {
       this.setState({ status: "pending" });
       console.log(this.state.page);
 
-      fetch(url)
-        .then((response) => response.json())
-        .then(({ hits }) => {
-          // console.log(hits);
-          this.setState((prevState) => ({
-            data: [...prevState.data, ...hits],
-            status: "resolved",
-          }));
-        });
-      // .catch((error) => this.setState({ error }));
-
+      APIfirst.fetchFirstLoader(nextQuery, nextPage).then(({ hits }) => {
+        // console.log(hits);
+        this.setState((prevState) => ({
+          // data: [...prevState.data, ...hits],
+          data: [
+            // ...prevState.data,
+            // [...Object.keys(this.state)]
+            ...hits.map(({ id, webformatURL, largeImageURL }) => ({
+              id,
+              webformatURL,
+              largeImageURL,
+            })),
+          ],
+          status: "resolved",
+        }));
+      });
       return;
     }
   }
@@ -128,7 +130,7 @@ class App extends Component {
 
         {status === "idle" && <h2>Enter your request.</h2>}
 
-        {status === "pending" && (
+        {/* {status === "pending" && (
           <Loader
             type="Puff"
             color="#00BFFF"
@@ -136,7 +138,7 @@ class App extends Component {
             width={100}
             timeout={3000} //3 secs
           />
-        )}
+        )} */}
 
         {status === "resolved" && (
           <ImageGallery
@@ -144,6 +146,10 @@ class App extends Component {
             handleClickImg={this.handleClickImg}
             handleButtonLoadMore={this.handleButtonLoadMore}
           />
+        )}
+
+        {data.length >= 12 && (
+          <Button handleButtonLoadMore={this.handleButtonLoadMore} />
         )}
 
         {showModal && (
@@ -157,6 +163,24 @@ class App extends Component {
 export default App;
 
 /////////////////////////////////////////////////////////////////////////
+
+// fetch(url)
+//   .then((response) => response.json())
+//   .then(({ hits }) => {
+//     this.setState({ data: hits, status: "resolved" });
+//   });
+// // .catch((error) =>  this.setState({ error }));
+
+// fetch(url)
+//   .then((response) => response.json())
+//   .then(({ hits }) => {
+//     // console.log(hits);
+//     this.setState((prevState) => ({
+//       data: [...prevState.data, ...hits],
+//       status: "resolved",
+//     }));
+//   });
+// .catch((error) => this.setState({ error }));
 
 // import "./App.css";
 // import { Component } from "react";
