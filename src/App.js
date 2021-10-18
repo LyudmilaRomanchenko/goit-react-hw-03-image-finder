@@ -3,6 +3,7 @@ import { Component } from "react";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
 import Modal from "./components/Modal";
+import APIfirst from "./components/Fetch/FetchFirstLoader";
 // import Button from "./components/Button";
 //Лоадер
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -42,12 +43,17 @@ class App extends Component {
 
       if (nextPage === 1) {
         this.setState({ status: "pending" });
-        fetch(url)
-          .then((response) => response.json())
-          .then(({ hits }) => {
-            this.setState({ data: hits, status: "resolved" });
-          });
+        APIfirst.fetchFirstLoader(nextQuery, nextPage).then(({ hits }) => {
+          this.setState({ data: hits, status: "resolved" });
+        });
         // .catch((error) =>  this.setState({ error }));
+
+        // fetch(url)
+        //   .then((response) => response.json())
+        //   .then(({ hits }) => {
+        //     this.setState({ data: hits, status: "resolved" });
+        //   });
+        // // .catch((error) =>  this.setState({ error }));
       }
 
       return;
