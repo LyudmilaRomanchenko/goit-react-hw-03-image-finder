@@ -6,7 +6,7 @@ import ImageGalleryItem from "../ImageGalleryItem";
 // import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 // import Loader from "react-loader-spinner";
 
-function ImageGallery({ data, handleClickImg, handleButtonLoadMore }) {
+function ImageGallery({ data, handleClickImg }) {
   console.log(data);
   return (
     <div>
@@ -38,7 +38,6 @@ ImageGallery.prototype = {
     }).isRequired
   ),
   handleClickImg: PropTypes.func.isRequired,
-  handleButtonLoadMore: PropTypes.func.isRequired,
 };
 
 export default ImageGallery;

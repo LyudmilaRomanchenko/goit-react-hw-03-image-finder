@@ -3,7 +3,7 @@ import { Component } from "react";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
 import Modal from "./components/Modal";
-import APIfirst from "./components/services/img-api";
+import API from "./components/services/img-api";
 import Button from "./components/Button";
 //Лоадер
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -34,60 +34,42 @@ class App extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
-    // const url = `${BASE_URL}/?q=${nextQuery}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-
-    if (prevQuery !== nextQuery) {
-      this.resetPage();
-      console.log(this.state.page);
-      // console.log(this.state.data);
-
-      if (nextPage === 1) {
-        this.setState({ status: "pending" });
-        APIfirst.fetchFirstLoader(nextQuery, nextPage).then(({ hits }) => {
-          this.setState({
-            data: hits.map(({ id, webformatURL, largeImageURL }) => ({
-              id,
-              webformatURL,
-              largeImageURL,
-            })),
-            status: "resolved",
-          });
-        });
-      }
-    }
-
-    if (prevPage !== nextPage) {
+    if (prevPage !== nextPage || prevQuery !== nextQuery) {
       this.setState({ status: "pending" });
       console.log(this.state.page);
 
-      APIfirst.fetchFirstLoader(nextQuery, nextPage).then(({ hits }) => {
+      API.fetchApi(nextQuery, nextPage).then(({ hits }) => {
         // console.log(hits);
         this.setState((prevState) => ({
-          // data: [...prevState.data, ...hits],
           data: [
-            // ...prevState.data,
-            // [...Object.keys(this.state)]
+            ...prevState.data,
             ...hits.map(({ id, webformatURL, largeImageURL }) => ({
               id,
               webformatURL,
               largeImageURL,
             })),
           ],
-          status: "resolved",
+          // status: "resolved",
         }));
       });
-      return;
+      this.setState({ status: "resolved" });
     }
   }
 
   // Сброс страницы в 1
   resetPage = () => {
-    this.setState({ page: 1, data: [] });
+    this.setState({
+      page: 1,
+      data: [],
+      showModal: false,
+      status: "idle",
+    });
   };
 
   // Запрос пользователя по поиску
   handleFormSubmit = (query) => {
     // console.log(query);
+    this.resetPage();
     this.setState({ query });
   };
 
@@ -130,7 +112,15 @@ class App extends Component {
 
         {status === "idle" && <h2>Enter your request.</h2>}
 
-        {/* {status === "pending" && (
+        {status === "resolved" && (
+          <ImageGallery data={data} handleClickImg={this.handleClickImg} />
+        )}
+
+        {data.length >= 12 && (
+          <Button handleButtonLoadMore={this.handleButtonLoadMore} />
+        )}
+
+        {status === "pending" && (
           <Loader
             type="Puff"
             color="#00BFFF"
@@ -138,18 +128,6 @@ class App extends Component {
             width={100}
             timeout={3000} //3 secs
           />
-        )} */}
-
-        {status === "resolved" && (
-          <ImageGallery
-            data={data}
-            handleClickImg={this.handleClickImg}
-            handleButtonLoadMore={this.handleButtonLoadMore}
-          />
-        )}
-
-        {data.length >= 12 && (
-          <Button handleButtonLoadMore={this.handleButtonLoadMore} />
         )}
 
         {showModal && (
@@ -163,6 +141,31 @@ class App extends Component {
 export default App;
 
 /////////////////////////////////////////////////////////////////////////
+// const url = `${BASE_URL}/?q=${nextQuery}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+
+// if (prevQuery !== nextQuery) {
+//   this.resetPage();
+//   console.log(this.state.page);
+//   // console.log(this.state.data);
+
+//   if (nextPage === 1) {
+//     this.setState({ status: "pending" });
+//     APIfirst.fetchFirstLoader(nextQuery, nextPage).then(({ hits }) => {
+//       this.setState({
+//         data: hits.map(({ id, webformatURL, largeImageURL }) => ({
+//           id,
+//           webformatURL,
+//           largeImageURL,
+//         })),
+//         status: "resolved",
+//       });
+//     });
+//   }
+// }
+
+/////////////////////////
+
+/////////////////
 
 // fetch(url)
 //   .then((response) => response.json())
