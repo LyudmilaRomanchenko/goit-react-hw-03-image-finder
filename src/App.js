@@ -3,7 +3,7 @@ import { Component } from "react";
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
 import Modal from "./components/Modal";
-import API from "./components/services/img-api";
+import API from "./services/img-api";
 import Button from "./components/Button";
 //Лоадер
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -51,6 +51,7 @@ class App extends Component {
           ],
           // status: "resolved",
         }));
+        // this.setState({ status: "resolved" });
       });
       this.setState({ status: "resolved" });
     }
@@ -112,14 +113,6 @@ class App extends Component {
 
         {status === "idle" && <h2>Enter your request.</h2>}
 
-        {status === "resolved" && (
-          <ImageGallery data={data} handleClickImg={this.handleClickImg} />
-        )}
-
-        {data.length >= 12 && (
-          <Button handleButtonLoadMore={this.handleButtonLoadMore} />
-        )}
-
         {status === "pending" && (
           <Loader
             type="Puff"
@@ -128,6 +121,14 @@ class App extends Component {
             width={100}
             timeout={3000} //3 secs
           />
+        )}
+
+        {status === "resolved" && (
+          <ImageGallery data={data} handleClickImg={this.handleClickImg} />
+        )}
+
+        {data.length >= 12 && (
+          <Button handleButtonLoadMore={this.handleButtonLoadMore} />
         )}
 
         {showModal && (

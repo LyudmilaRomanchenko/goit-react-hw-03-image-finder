@@ -21,10 +21,6 @@ function ImageGallery({ data, handleClickImg }) {
           </li>
         ))}
       </ul>
-
-      {/* {data.length >= 12 && (
-        <Button handleButtonLoadMore={handleButtonLoadMore} />
-      )} */}
     </div>
   );
 }
