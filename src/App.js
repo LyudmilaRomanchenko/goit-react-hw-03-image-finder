@@ -5,9 +5,10 @@ import ImageGallery from "./components/ImageGallery";
 import Modal from "./components/Modal";
 import API from "./services/img-api";
 import Button from "./components/Button";
+import Spinner from "./components/Spinner";
 //Лоадер
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
+// import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+// import Loader from "react-loader-spinner";
 // const API_KEY = "23052937-32fb9bd6f4b84b12682be3748";
 // const BASE_URL = `https://pixabay.com/api`;
 
@@ -19,7 +20,7 @@ class App extends Component {
     showModal: false,
     largeImg: "",
     status: "idle",
-    // error: null,
+    error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -34,26 +35,26 @@ class App extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
+    // console.log(this.state.status);
+
     if (prevPage !== nextPage || prevQuery !== nextQuery) {
       this.setState({ status: "pending" });
-      console.log(this.state.page);
 
-      API.fetchApi(nextQuery, nextPage).then(({ hits }) => {
-        // console.log(hits);
-        this.setState((prevState) => ({
-          data: [
-            ...prevState.data,
-            ...hits.map(({ id, webformatURL, largeImageURL }) => ({
-              id,
-              webformatURL,
-              largeImageURL,
-            })),
-          ],
-          // status: "resolved",
-        }));
-        // this.setState({ status: "resolved" });
-      });
-      this.setState({ status: "resolved" });
+      API.fetchApi(nextQuery, nextPage)
+        .then(({ hits }) => {
+          this.setState((prevState) => ({
+            data: [
+              ...prevState.data,
+              ...hits.map(({ id, webformatURL, largeImageURL }) => ({
+                id,
+                webformatURL,
+                largeImageURL,
+              })),
+            ],
+          }));
+        })
+        .catch((error) => this.setState({ error }))
+        .finally(() => this.setState({ status: "resolved" }));
     }
   }
 
@@ -86,7 +87,6 @@ class App extends Component {
     this.setState(({ page }) => ({
       page: page + 1,
     }));
-    // console.log(this.state.page);
   };
 
   // По клику на картинку открывается модалка с большим изображением
@@ -113,33 +113,55 @@ class App extends Component {
 
         {status === "idle" && <h2>Enter your request.</h2>}
 
-        {status === "pending" && (
-          <Loader
-            type="Puff"
-            color="#00BFFF"
-            height={100}
-            width={100}
-            timeout={3000} //3 secs
-          />
-        )}
-
-        {status === "resolved" && (
+        {data.length > 0 && (
           <ImageGallery data={data} handleClickImg={this.handleClickImg} />
         )}
 
-        {data.length >= 12 && (
+        {data.length >= 12 && status === "resolved" && (
           <Button handleButtonLoadMore={this.handleButtonLoadMore} />
         )}
 
         {showModal && (
           <Modal largeImg={this.state.largeImg} onClick={this.toggleModal} />
         )}
+
+        {status === "pending" && <Spinner />}
       </div>
     );
   }
 }
 
 export default App;
+
+//////////////////////////////////
+// try {
+//         this.setState({ status: "pending" });
+//         console.log(this.state.status);
+
+//         API.fetchApi(nextQuery, nextPage).then(({ hits }) =>
+//           this.setState((prevState) => ({
+//             data: [
+//               ...prevState.data,
+//               ...hits.map(({ id, webformatURL, largeImageURL }) => ({
+//                 id,
+//                 webformatURL,
+//                 largeImageURL,
+//               })),
+//             ],
+//           }))
+//         );
+//       } catch (error) {
+//         this.setState({ error });
+//       } finally {
+//         if (prevState.data.length > 5) {
+//           window.scrollTo({
+//             top: document.documentElement.scrollHeight,
+//             behavior: "smooth",
+//           });
+//         }
+//         // this.setState({ status: "resolved" });
+//       }
+//       // this.setState({ status: "resolved" });
 
 /////////////////////////////////////////////////////////////////////////
 // const url = `${BASE_URL}/?q=${nextQuery}&page=${nextPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
